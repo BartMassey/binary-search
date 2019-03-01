@@ -2,12 +2,6 @@
 
 import random
 
-def linear_search(array, key):
-    for i in range(len(array)):
-        if key <= array[i]:
-            return i
-    return len(array)
-
 def fail(which, key, b, correct, value):
     print("%s failed %d with key %d correct is %d value %d" % (which, b, key, correct, value))
 
@@ -190,7 +184,8 @@ def leftmost_search(array, key, correct):
         fail("leftmost", key, b, correct, array[correct]);
     return cmp
 
-def do_searches(min_size, max_size, tries):
+def do_searches(min_size, max_size):
+
     searches = [
         {
             'name': "classic",
@@ -233,20 +228,22 @@ def do_searches(min_size, max_size, tries):
     print("")
 
     for size in range(min_size, max_size):
-        array = [random.randint(0,65536) for i in range(size)]
-        array.sort()
-
-        # eliminate duplicates
-
-        for i in range(1,len(array)):
-            if array[i-1] == array[i]:
-                array[i] += 1
-
-        for t in range(tries):
-            key = random.randint(0,65536)
-            correct = linear_search(array, key)
+        array = list(range(size))
+        tries = 0
+        for miss in [False, True]:
+            if miss:
+                array = \
+                    list(range(key)) + \
+                    list(range(key + 1, size + 1))
             for search in searches:
-                search['compares'] += search['search'](array, key, correct);
+                # Set up array and run all searches.
+                for key in range(0, size):
+                        # print("trying", size, key, miss)
+                        search['compares'] += \
+                            search['search'](array, key, key);
+                        tries += 1
+
+        # Record and report results.
         print("%5d" % size, end='')
         for search in searches:
             print("%13.1f" % (search['compares'] / tries), end='')
@@ -260,4 +257,4 @@ def do_searches(min_size, max_size, tries):
     print('')
     print("classic less %d equal %d more %d" % (classic_less, classic_equal, classic_more))
 
-do_searches(1, 1024, 512)
+do_searches(1, 1024)
