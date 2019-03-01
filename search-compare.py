@@ -229,7 +229,6 @@ def do_searches(min_size, max_size):
 
     for size in range(min_size, max_size):
         array = list(range(size))
-        tries = 0
         for miss in [False, True]:
             if miss:
                 array = \
@@ -237,16 +236,15 @@ def do_searches(min_size, max_size):
                     list(range(key + 1, size + 1))
             for search in searches:
                 # Set up array and run all searches.
-                for key in range(0, size):
+                for key in range(size):
                         # print("trying", size, key, miss)
                         search['compares'] += \
                             search['search'](array, key, key);
-                        tries += 1
 
         # Record and report results.
         print("%5d" % size, end='')
         for search in searches:
-            print("%13.1f" % (search['compares'] / tries), end='')
+            print("%13.3f" % (search['compares'] / (size * 2)), end='')
             totals[search['name']] += search['compares']
             search['compares'] = 0
         print("")
